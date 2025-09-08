@@ -8,9 +8,12 @@ let mainWindow: BrowserWindow | null = null
 function createWindow(): void {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1024,
+    height: 600,
+    minHeight: 400,
+    minWidth: 720,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
@@ -51,8 +54,6 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  // IPC test
-
   createWindow()
 
   app.on('activate', function () {
@@ -71,7 +72,12 @@ app.on('window-all-closed', () => {
   }
 })
 
-ipcMain.on('ping', () => mainWindow?.minimize())
+ipcMain.on('minimize', () => mainWindow?.minimize())
+ipcMain.on('maximize', () => {
+  mainWindow?.isMaximized() ? mainWindow?.unmaximize() : mainWindow?.maximize()
+  ipcMain.emit('isMaximized', mainWindow?.isMaximized())
+})
+ipcMain.on('close', () => mainWindow?.close())
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
