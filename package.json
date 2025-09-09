@@ -4,8 +4,8 @@
   "description": "the next generation CAD software",
   "main": "./out/main/index.js",
   "license": "AGPL-3.0-only",
-  "author": "example.com",
-  "homepage": "https://electron-vite.org",
+  "author": "zeankun <zean@zeankun.dev>",
+  "homepage": "https://compass-cad.web.app",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
