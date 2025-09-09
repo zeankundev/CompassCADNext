@@ -30,6 +30,12 @@ function createWindow(): void {
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
+  mainWindow.on('maximize', () => {
+    mainWindow?.webContents.send('isMaximized', true);
+  })
+  mainWindow.on('unmaximize', () => {
+    mainWindow?.webContents.send('isMaximized', false)
+  })
 
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
@@ -75,7 +81,7 @@ app.on('window-all-closed', () => {
 ipcMain.on('minimize', () => mainWindow?.minimize())
 ipcMain.on('maximize', () => {
   mainWindow?.isMaximized() ? mainWindow?.unmaximize() : mainWindow?.maximize()
-  ipcMain.emit('isMaximized', mainWindow?.isMaximized())
+  mainWindow?.webContents.send('isMaximized', mainWindow?.isMaximized());
 })
 ipcMain.on('close', () => mainWindow?.close())
 
