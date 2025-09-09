@@ -11,13 +11,12 @@
     flex: 1;
     -webkit-app-region: drag;
     min-height: 100%;
-    padding: 22px;
+    padding: 20px;
 }
 .window-bar .window-bar-right {
-    align-self: flex-end;
+    align-self: center;
     display: flex;
-    gap: 20px;
-    padding: 10px;
+    gap: 5px;
 }
 .window-bar .window-bar-right .window-bar-button {
     -webkit-appearance: none;
@@ -26,11 +25,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 24px;
-    height: 24px;
+    padding: 11px;
 }
 .window-bar .window-bar-right .window-bar-button:hover {
     background: var(--secondary);
+}
+.window-bar .window-bar-right .window-bar-button:hover.window-close {
+    background-color: var(--theme-error);
 }
 .window-bar .window-bar-right .window-bar-button img {
     width: 18px;

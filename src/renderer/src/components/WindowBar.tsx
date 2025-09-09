@@ -35,7 +35,7 @@ export default function WindowBar() {
                     <img src={isMaximized ? RestoreDown : Maximize} alt="Maximize" />
                 </button>
                 <button
-                    className={styles['window-bar-button']}
+                    className={styles['window-bar-button'] + ' ' + styles['window-close']}
                     title="Close"
                     onClick={() => {
                         window.electron.ipcRenderer.send('close');
