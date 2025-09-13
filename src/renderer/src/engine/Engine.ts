@@ -189,6 +189,7 @@ export class GraphicsRenderer {
     }
 
     start() {
+        console.log('[renderer] starting renderer instance')
         this.logicDisplay = new LogicDisplay();
         this.zoom = 1;
         this.temporaryObjectArray = [];
@@ -200,6 +201,12 @@ export class GraphicsRenderer {
             throw new Error('Failed to get 2D context');
         }
         this.context = context;
+    }
+    scaleForHighDPI(dpi: number) {
+        if (this.enableHighDPI) {
+            console.log('[renderer] ok, scaling')
+            this.context?.scale(dpi, dpi);
+        }
     }
     refreshSelectionTools() {
         if (this.selectedComponent !== null && this.logicDisplay?.components[this.selectedComponent]) {
