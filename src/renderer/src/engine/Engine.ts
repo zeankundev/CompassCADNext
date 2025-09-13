@@ -1153,43 +1153,7 @@ export class GraphicsRenderer {
     }
     drawGrid(camXoff: number, camYoff: number) {
         const gridSpacingAdjusted = this.gridSpacing * this.zoom;
-        let densityDivisor;
-        if (this.gridSpacing < 5) {
-            if (this.zoom <= 1) {
-                densityDivisor = 50;
-            } else if (this.zoom <= 2) {
-                densityDivisor = 25;
-            } else {
-                densityDivisor = 20;
-            }
-        }
-        else if (this.gridSpacing < 10) {
-            if (this.zoom < 1) {
-                densityDivisor = 6;
-            } else if (this.zoom <= 2) {
-                densityDivisor = 3;
-            } else {
-                densityDivisor = 1;
-            }
-        }
-        else if (this.gridSpacing < 20) {
-            if (this.zoom < 1) {
-                densityDivisor = 3;
-            } else {
-                densityDivisor = 1.5;
-            }
-        }
-        else if (this.gridSpacing < 50) {
-            if (this.zoom < 1) densityDivisor = 2;
-            else densityDivisor = 1;
-        }
-        else {
-            if (this.zoom < 1) {
-                densityDivisor = 2
-            } else {
-                densityDivisor = 1;
-            }
-        }
+        let densityDivisor = Math.max(1, Math.ceil(64 / (this.gridSpacing * this.zoom)));;
         const effectiveSpacing = gridSpacingAdjusted * densityDivisor;
         const leftBound = -this.displayWidth / 2;
         const rightBound = this.displayWidth / 2;
@@ -1507,13 +1471,14 @@ export class GraphicsRenderer {
             this.update(); // Re-render the canvas
         }
     }
-    public onComponentChangeCallback: (() => void) | null = null;
-
+    public onComponentChange: (() => void) | null = null;
     public onComponentArrayChanged: (() => void) | null = null;
+    public onZoomUpdate: (() => void) | null = null;
+    public onModeChange: (() => void) | null = null;
 
     private notifyComponentChange() {
-        if (this.onComponentChangeCallback) {
-            this.onComponentChangeCallback();
+        if (this.onComponentChange) {
+            this.onComponentChange();
         }
     }
     performAction(e: MouseEvent, action: number) {
@@ -2150,10 +2115,13 @@ export class GraphicsRenderer {
         console.log(newZoom)
 
         // Zoom interval control
-        if (newZoom <= 0.4 || newZoom >= 15)
+        if (newZoom <= 0.015 || newZoom >= 20)
             return;
 
         this.targetZoom = newZoom;
+        if (this.onZoomUpdate) {
+            this.onZoomUpdate();
+        }
         const viewportCenterX = this.displayWidth / 2;
 		const viewportCenterY = this.displayHeight / 2;
 		const cursorOffsetX = (this.mouse!.cursorXGlobal - this.offsetX - viewportCenterX) / this.zoom;
