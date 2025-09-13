@@ -9,6 +9,7 @@
 .window-bar .window-bar-left {
     /*padding: 10px;*/
     display: flex;
+    align-items: center;
 }
 .window-bar .window-bar-dragger {
     flex: 1;

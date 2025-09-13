@@ -6,14 +6,41 @@ import Minimize from '../assets/icons/minimize.svg'
 import Maximize from '../assets/icons/maximize.svg'
 import Close from '../assets/icons/close.svg'
 import RestoreDown from '../assets/icons/restoredown.svg'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { GraphicsRenderer } from '@renderer/engine/Engine'
+import { getRendererIfAvailable } from '@renderer/exports'
+import { openModal } from './ModalProvider'
+
+function TestComponent() {
+    const [counterthingy, setcounterthingy] = useState<number>(0);
+    const upCounter = () => setcounterthingy(counterthingy + 1);
+    return (
+        <>
+            <span>Let's count! Now, it's {counterthingy}</span>
+            <button onClick={upCounter}>Count up</button>
+        </>
+    )
+}
 
 export default function WindowBar() {
     const [isMaximized, setMaximized] = useState<boolean>(false);
+    const [zoom, setZoom] = useState<number>(1);
+    const renderer = useRef<GraphicsRenderer>(null);
     window.electron.ipcRenderer.on('isMaximized', (_event, isMaximized: boolean) => {
         console.log(`[windowbar] isMaximized: ${isMaximized}`);
         setMaximized(isMaximized);
     })
+    useEffect(() => {
+        renderer.current = getRendererIfAvailable();
+        if (renderer.current) {
+            renderer.current.onZoomUpdate = () => {
+                setZoom(renderer.current!.zoom);
+            }
+        }
+    }, [])
+    const openDemoModal = () => {
+        openModal('Hello World', <TestComponent/>)
+    }
     return (
         <>
             <div className={styles['window-bar']}>
@@ -43,9 +70,10 @@ export default function WindowBar() {
                     <button className={styles['window-bar-button']}>
                         <img src={CompassCADLogoMonochrome} />
                     </button>
-                    <button className={styles['window-bar-button']}>
+                    <button className={styles['window-bar-button']} onClick={openDemoModal}>
                         <img src={MenuIcon} />
                     </button>
+                    <span>{zoom.toFixed(2)}x</span>
                 </div>
                 <div className={styles['window-bar-dragger']}></div>
                 {window.process.platform != 'darwin' && (
