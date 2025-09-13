@@ -92,6 +92,7 @@ export class GraphicsRenderer {
     handles: HandleProperties[];
     dragHandle: string | null;
     lastSelectedComponent: number| null;
+    enableHighDPI: boolean;
 
     constructor(
         displayRef: HTMLCanvasElement | null,
@@ -184,6 +185,7 @@ export class GraphicsRenderer {
         this.handles = [];
         this.dragHandle = '';
         this.lastSelectedComponent = null;
+        this.enableHighDPI = true;
     }
 
     start() {
