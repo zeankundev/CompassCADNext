@@ -5,7 +5,8 @@
     align-items: center;
 }
 .window-bar .window-bar-left {
-    padding: 10px;
+    /*padding: 10px;*/
+    display: flex;
 }
 .window-bar .window-bar-dragger {
     flex: 1;
@@ -18,7 +19,7 @@
     display: flex;
     gap: 5px;
 }
-.window-bar .window-bar-right .window-bar-button {
+.window-bar-button {
     -webkit-appearance: none;
     border: none;
     background: none;
@@ -27,13 +28,13 @@
     justify-content: center;
     padding: 11px;
 }
-.window-bar .window-bar-right .window-bar-button:hover {
+.window-bar-button:hover {
     background: var(--secondary);
 }
-.window-bar .window-bar-right .window-bar-button:hover.window-close {
+.window-bar-button:hover.window-close {
     background-color: var(--theme-error);
 }
-.window-bar .window-bar-right .window-bar-button img {
+.window-bar-button img {
     width: 18px;
     height: 18px;
 }
