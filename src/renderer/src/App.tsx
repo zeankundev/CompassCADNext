@@ -29,9 +29,9 @@ function App(): React.JSX.Element {
       console.log(`[main] log info, dpi:${dpi}, w:${width}, h:${height}`)
       renderer.current.displayWidth = width;
       renderer.current.displayHeight = height;
-      renderer.current.scaleForHighDPI(dpi);
       canvas.current.width = width;
       canvas.current.height = height;
+      renderer.current.context?.scale(dpi, dpi)
       canvas.current.style.height = window.innerHeight + 'px';
       canvas.current.style.width = window.innerWidth + 'px';
     }

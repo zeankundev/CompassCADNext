@@ -2,7 +2,9 @@
     display: flex;
     border-bottom: 0.5px solid var(--outline);
     box-shadow: 0px 0px 13px 3px rgba(0, 0, 0, 0.5);
+    background-color: var(--primary-background);
     align-items: center;
+    z-index: 9999999;
 }
 .window-bar .window-bar-left {
     /*padding: 10px;*/
@@ -74,4 +76,18 @@
 }
 .mac-roundy.full {
     background-color: var(--macos-fullscreen);
+}
+.canvas-container {
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+}
+.canvas-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
