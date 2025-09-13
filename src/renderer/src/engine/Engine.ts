@@ -1099,18 +1099,31 @@ export class GraphicsRenderer {
     }
     drawOrigin(cx: number, cy: number) {
         if (this.context) {
+            const cursorDrawing: VectorType[] = [
+                {x:0,y:0},
+                {x:-10,y:30},
+                {x:10,y:30},
+                {x:0,y:0},
+                {x:30,y:10},
+                {x:30,y:-10},
+                {x:0,y:0},
+                {x:10,y:-30},
+                {x:-10,y:-30},
+                {x:0,y:0},
+                {x:-30,y:10},
+                {x:-30,y:-10},
+                {x:0,y:0}
+            ]
             this.context.lineWidth = 1;
             this.context.strokeStyle = "#ffffff";
 
             this.context.beginPath();
-            this.context.moveTo(cx * this.zoom, -this.displayHeight);
-            this.context.lineTo(cx * this.zoom, this.displayHeight);
-            this.context.closePath();
-            this.context.stroke();
-
-            this.context.beginPath();
-            this.context.moveTo(-this.displayWidth, cy * this.zoom);
-            this.context.lineTo(this.displayWidth, cy * this.zoom);
+            this.context.moveTo((cursorDrawing[0].x + cx) * this.zoom, (cursorDrawing[0].y + cy) * this.zoom);
+            cursorDrawing.forEach((vector, index) => {
+                if (index > 0 && this.context) {
+                    this.context.lineTo((vector.x + cx) * this.zoom, (vector.y + cy) * this.zoom)
+                }
+            })
             this.context.closePath();
             this.context.stroke();
         }
