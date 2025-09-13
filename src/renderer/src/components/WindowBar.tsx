@@ -18,26 +18,28 @@ export default function WindowBar() {
         <>
             <div className={styles['window-bar']}>
                 <div className={styles['window-bar-left']}>
-                    <div className={styles['window-bar-mac-buttons']}>
-                        <button 
-                            className={styles['window-bar-button-mac']}
-                            onClick={() => window.electron.ipcRenderer.send('close')}
-                        >
-                            <div className={`${styles['mac-roundy']} ${styles['close']}`}></div>
-                        </button>
-                        <button 
-                            className={styles['window-bar-button-mac']}
-                            onClick={() => window.electron.ipcRenderer.send('minimize')}
-                        >
-                            <div className={`${styles['mac-roundy']} ${styles['minimize']}`}></div>
-                        </button>
-                        <button 
-                            className={styles['window-bar-button-mac']}
-                            onClick={() => window.electron.ipcRenderer.send('fullscreen')}
-                        >
-                            <div className={`${styles['mac-roundy']} ${styles['full']}`}></div>
-                        </button>
-                    </div>
+                    {window.process.platform == 'darwin' && (
+                        <div className={styles['window-bar-mac-buttons']}>
+                            <button 
+                                className={styles['window-bar-button-mac']}
+                                onClick={() => window.electron.ipcRenderer.send('close')}
+                            >
+                                <div className={`${styles['mac-roundy']} ${styles['close']}`}></div>
+                            </button>
+                            <button 
+                                className={styles['window-bar-button-mac']}
+                                onClick={() => window.electron.ipcRenderer.send('minimize')}
+                            >
+                                <div className={`${styles['mac-roundy']} ${styles['minimize']}`}></div>
+                            </button>
+                            <button 
+                                className={styles['window-bar-button-mac']}
+                                onClick={() => window.electron.ipcRenderer.send('fullscreen')}
+                            >
+                                <div className={`${styles['mac-roundy']} ${styles['full']}`}></div>
+                            </button>
+                        </div>
+                    )}
                     <button className={styles['window-bar-button']}>
                         <img src={CompassCADLogoMonochrome} />
                     </button>
@@ -46,35 +48,37 @@ export default function WindowBar() {
                     </button>
                 </div>
                 <div className={styles['window-bar-dragger']}></div>
-                <div className={styles['window-bar-right']}>
-                    <button
-                        className={styles['window-bar-button']}
-                        title="Minimize"
-                        onClick={() => {
-                            window.electron.ipcRenderer.send('minimize');
-                        }}
-                    >
-                        <img src={Minimize} alt="Minimize" />
-                    </button>
-                    <button
-                        className={styles['window-bar-button']}
-                        title={isMaximized ? 'Restore Down' : 'Maximze'}
-                        onClick={() => {
-                            window.electron.ipcRenderer.send('maximize');
-                        }}
-                    >
-                        <img src={isMaximized ? RestoreDown : Maximize} alt="Maximize" />
-                    </button>
-                    <button
-                        className={styles['window-bar-button'] + ' ' + styles['window-close']}
-                        title="Close"
-                        onClick={() => {
-                            window.electron.ipcRenderer.send('close');
-                        }}
-                    >
-                        <img src={Close} alt="Close" />
-                    </button>
-                </div>
+                {window.process.platform != 'darwin' && (
+                    <div className={styles['window-bar-right']}>
+                        <button
+                            className={styles['window-bar-button']}
+                            title="Minimize"
+                            onClick={() => {
+                                window.electron.ipcRenderer.send('minimize');
+                            }}
+                        >
+                            <img src={Minimize} alt="Minimize" />
+                        </button>
+                        <button
+                            className={styles['window-bar-button']}
+                            title={isMaximized ? 'Restore Down' : 'Maximze'}
+                            onClick={() => {
+                                window.electron.ipcRenderer.send('maximize');
+                            }}
+                        >
+                            <img src={isMaximized ? RestoreDown : Maximize} alt="Maximize" />
+                        </button>
+                        <button
+                            className={styles['window-bar-button'] + ' ' + styles['window-close']}
+                            title="Close"
+                            onClick={() => {
+                                window.electron.ipcRenderer.send('close');
+                            }}
+                        >
+                            <img src={Close} alt="Close" />
+                        </button>
+                    </div>
+                )}
             </div>
         </>
     )
