@@ -27,6 +27,8 @@
     align-items: center;
     justify-content: center;
     padding: 11px;
+    width: 40px;
+    height: 40px;
 }
 .window-bar-button:hover {
     background: var(--secondary);
@@ -37,4 +39,39 @@
 .window-bar-button img {
     width: 18px;
     height: 18px;
+}
+.window-bar-mac-buttons {
+    display: flex;
+    padding-left: 8px;
+}
+.window-bar-button-mac {
+    -webkit-appearance: none;
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px;
+    padding-right: 8px;
+    padding-left: 8px;
+    height: 40px;
+}
+.window-bar-button-mac:hover .mac-roundy {
+    filter: brightness(1.4);
+    background-blend-mode: multiply;
+}
+.window-bar-button-mac .mac-roundy {
+    background-color: #4f4f4f;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+.mac-roundy.close {
+    background-color: var(--macos-close);
+}
+.mac-roundy.minimize {
+    background-color: var(--macos-minimize);
+}
+.mac-roundy.full {
+    background-color: var(--macos-fullscreen);
 }

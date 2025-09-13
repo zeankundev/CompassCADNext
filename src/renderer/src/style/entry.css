@@ -9,6 +9,9 @@
     --text: #efefef;
     --theme: #0080ff;
     --theme-error: #ff4400;
+    --macos-close: #ff4400;
+    --macos-minimize: #ffc800;
+    --macos-fullscreen: #00ff8c;
 }
 @font-face {
     font-family: 'CircularSp';

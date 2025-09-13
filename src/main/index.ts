@@ -83,6 +83,9 @@ ipcMain.on('maximize', () => {
   mainWindow?.isMaximized() ? mainWindow?.unmaximize() : mainWindow?.maximize()
   mainWindow?.webContents.send('isMaximized', mainWindow?.isMaximized());
 })
+ipcMain.on('fullscreen', () => {
+  mainWindow?.setFullScreen(!mainWindow.isFullScreen());
+})
 ipcMain.on('close', () => mainWindow?.close())
 
 // In this file you can include the rest of your app's specific main process

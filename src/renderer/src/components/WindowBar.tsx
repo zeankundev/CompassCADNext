@@ -18,6 +18,26 @@ export default function WindowBar() {
         <>
             <div className={styles['window-bar']}>
                 <div className={styles['window-bar-left']}>
+                    <div className={styles['window-bar-mac-buttons']}>
+                        <button 
+                            className={styles['window-bar-button-mac']}
+                            onClick={() => window.electron.ipcRenderer.send('close')}
+                        >
+                            <div className={`${styles['mac-roundy']} ${styles['close']}`}></div>
+                        </button>
+                        <button 
+                            className={styles['window-bar-button-mac']}
+                            onClick={() => window.electron.ipcRenderer.send('minimize')}
+                        >
+                            <div className={`${styles['mac-roundy']} ${styles['minimize']}`}></div>
+                        </button>
+                        <button 
+                            className={styles['window-bar-button-mac']}
+                            onClick={() => window.electron.ipcRenderer.send('fullscreen')}
+                        >
+                            <div className={`${styles['mac-roundy']} ${styles['full']}`}></div>
+                        </button>
+                    </div>
                     <button className={styles['window-bar-button']}>
                         <img src={CompassCADLogoMonochrome} />
                     </button>
