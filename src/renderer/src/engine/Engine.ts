@@ -161,7 +161,7 @@ export class GraphicsRenderer {
         this.cOutX = 0;
         this.cOutY = 0;
         this.showGrid = true;
-        this.showOrigin = false;
+        this.showOrigin = true;
         this.showRules = true;
         this.gridPointer = false;
         this.gridSpacing = 100;
@@ -1100,7 +1100,7 @@ export class GraphicsRenderer {
     drawOrigin(cx: number, cy: number) {
         if (this.context) {
             this.context.lineWidth = 1;
-            this.context.strokeStyle = "#fff";
+            this.context.strokeStyle = "#ffffff";
 
             this.context.beginPath();
             this.context.moveTo(cx * this.zoom, -this.displayHeight);
@@ -2175,6 +2175,7 @@ export class GraphicsRenderer {
         this.zoom = this.targetZoom;
         this.updateCamera();
         this.clearGrid();
+        console.log('[renderer] cam offset, x:' + this.cOutX + ', y:' + this.cOutY)
         if (this.showGrid)
             this.drawGrid(this.cOutX, this.cOutY);
 

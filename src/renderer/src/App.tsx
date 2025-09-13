@@ -24,22 +24,24 @@ function App(): React.JSX.Element {
   const resize = () => {
     if (canvas.current && renderer.current) {
       const dpi = window.devicePixelRatio;
-      const width = window.innerWidth * devicePixelRatio;
-      const height = window.innerHeight * devicePixelRatio;
-      console.log(`[main] log info, dpi:${dpi}, w:${width}, h:${height}`)
-      renderer.current.displayWidth = width;
-      renderer.current.displayHeight = height;
-      canvas.current.width = width;
-      canvas.current.height = height;
-      renderer.current.context?.scale(dpi, dpi)
-      canvas.current.style.height = window.innerHeight + 'px';
+      const physicalWidth = window.innerWidth * dpi;
+      const physicalHeight = (window.innerHeight - 40) * dpi;
+      canvas.current.width = physicalWidth;
+      canvas.current.height = physicalHeight;
       canvas.current.style.width = window.innerWidth + 'px';
+      canvas.current.style.height = window.innerHeight - 40 + 'px';
+      renderer.current.displayWidth = window.innerWidth;
+      renderer.current.displayHeight = window.innerHeight;
+      renderer.current.scaleForHighDPI(dpi);
     }
   }
   useEffect(() => {
     startRendererInstance();
     resize();
   }, [])
+  window.onresize = () => {
+    resize();
+  }
   return (
     <>
       <WindowBar/>
