@@ -2198,11 +2198,11 @@ export class GraphicsRenderer {
         this.drawAllComponents(this.logicDisplay!.components, 0, 0);
         if (this.temporaryComponentType != null)
             this.drawTemporaryComponent();
-        this.drawRules();
         this.refreshSelectionTools();
         if (this.recordingMode) {
             this.drawUserCursor((this.getCursorXRaw() + this.camX) * this.zoom, (this.getCursorYRaw() + this.camY) * this.zoom);
         }
+        this.drawRules();
     }
 }
 export const InitializeInstance = (renderer: GraphicsRenderer) => {
