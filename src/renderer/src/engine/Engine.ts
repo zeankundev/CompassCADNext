@@ -2115,7 +2115,7 @@ export class GraphicsRenderer {
         console.log(newZoom)
 
         // Zoom interval control
-        if (newZoom <= 0.015 || newZoom >= 20)
+        if (newZoom <= 0.1 || newZoom >= 20)
             return;
 
         this.targetZoom = newZoom;
