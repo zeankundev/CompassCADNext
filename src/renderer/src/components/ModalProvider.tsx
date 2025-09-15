@@ -9,7 +9,8 @@ interface ModalPayload {
     content: ModalContent
 }
 
-const modalEmitter = {
+const globalThis = window as any;
+globalThis.__modalEmitter = globalThis.__modalEmitter || {
     listeners: new Set<(payload: ModalPayload) => void>(),
     emit(payload: ModalPayload) {
         this.listeners.forEach(listener => listener(payload));
@@ -20,7 +21,8 @@ const modalEmitter = {
             this.listeners.delete(callback);
         }
     }
-}
+};
+const modalEmitter = globalThis.__modalEmitter;
 
 export const openModal = (title: ModalTitle, content: ModalContent): void => {
     console.log('[modal] opening modal as per request')

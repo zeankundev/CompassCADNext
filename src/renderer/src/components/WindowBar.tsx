@@ -1,6 +1,13 @@
 import styles from '../style/index.module.css'
 import CompassCADLogoMonochrome from '../assets/icons/newlogo.svg'
 import MenuIcon from '../assets/icons/menu.svg'
+// Context icons
+import NewFileIcon from '../assets/icons/newLogic.svg'
+import OpenFileIcon from '../assets/icons/openLogic.svg'
+import BackupIcon from '../assets/icons/openbackup.svg'
+import SaveDesignIcon from '../assets/icons/saveLogic.svg'
+import SaveDesignAsIcon from '../assets/icons/saveas.svg'
+import ExportIcon from '../assets/icons/export.svg'
 // Window buttons
 import Minimize from '../assets/icons/minimize.svg'
 import Maximize from '../assets/icons/maximize.svg'
@@ -10,6 +17,7 @@ import { useEffect, useRef, useState } from 'react'
 import { GraphicsRenderer } from '@renderer/engine/Engine'
 import { getRendererIfAvailable } from '@renderer/exports'
 import { openModal } from './ModalProvider'
+import { MenuProvider, MenuContext } from './MenuProvider'
 
 function TestComponent() {
     const [counterthingy, setcounterthingy] = useState<number>(0);
@@ -25,6 +33,7 @@ function TestComponent() {
 export default function WindowBar() {
     const [isMaximized, setMaximized] = useState<boolean>(false);
     const [zoom, setZoom] = useState<number>(1);
+    const [menuOpened, setMenuOpened] = useState<boolean>(false);
     const renderer = useRef<GraphicsRenderer>(null);
     window.electron.ipcRenderer.on('isMaximized', (_event, isMaximized: boolean) => {
         console.log(`[windowbar] isMaximized: ${isMaximized}`);
@@ -37,9 +46,41 @@ export default function WindowBar() {
                 setZoom(renderer.current!.zoom);
             }
         }
-    }, [])
-    const openDemoModal = () => {
-        openModal('Hello World', <TestComponent/>)
+    }, []);
+    window.addEventListener('click', (event) => {
+        const target = event.target as HTMLElement;
+        if (!target.closest('#menu-opener') && menuOpened) {
+            setMenuOpened(false);
+        }
+    });
+    window.onkeydown = (e: KeyboardEvent) => {
+        if (e.key === 'Alt') {
+            setMenuOpened(!menuOpened);
+            return;
+        }
+        
+        if (menuOpened) {
+            const menuItems = document.querySelectorAll(styles['menu-context']);
+            const currentFocus = document.activeElement;
+            const currentIndex = Array.from(menuItems).indexOf(currentFocus as Element);
+            
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIndex = currentIndex > 0 ? currentIndex - 1 : menuItems.length - 1;
+                const element = menuItems[prevIndex] as HTMLElement;
+                if (element) element.focus();
+                console.log('[windowbar] focusing prev element')
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextIndex = currentIndex < menuItems.length - 1 ? currentIndex + 1 : 0;
+                const element = menuItems[nextIndex] as HTMLElement;
+                if (element) element.focus();
+                console.log('[windowbar] focusing next element')
+            }
+        }
+    }
+    const toggleMenuState = () => {
+        setMenuOpened(!menuOpened)
     }
     return (
         <>
@@ -70,7 +111,7 @@ export default function WindowBar() {
                     <button className={styles['window-bar-button']}>
                         <img src={CompassCADLogoMonochrome} />
                     </button>
-                    <button className={styles['window-bar-button']} onClick={openDemoModal}>
+                    <button className={styles['window-bar-button']} id='menu-opener' onClick={toggleMenuState}>
                         <img src={MenuIcon} />
                     </button>
                     <span>{zoom.toFixed(2)}x</span>
@@ -108,6 +149,16 @@ export default function WindowBar() {
                     </div>
                 )}
             </div>
+            {menuOpened && (
+                <MenuProvider offset={{x: 50, y: 50}}>
+                    <MenuContext icon={NewFileIcon} title='New File (ctrl+n)'/>
+                    <MenuContext icon={OpenFileIcon} title='Open File (ctrl+o)'/>
+                    <MenuContext icon={BackupIcon} title='Open Backups' />
+                    <MenuContext icon={SaveDesignIcon} title='Save Design (ctrl+s)'/>
+                    <MenuContext icon={SaveDesignAsIcon} title='Save as (ctrl+alt+s)'/>
+                    <MenuContext icon={ExportIcon} title='Export to SVG (ctrl+e)' />
+                </MenuProvider>
+            )}
         </>
     )
 }
