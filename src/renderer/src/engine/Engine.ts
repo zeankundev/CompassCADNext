@@ -195,6 +195,7 @@ export class GraphicsRenderer {
         this.temporaryObjectArray = [];
         this.keyboard = new KeyboardHandler();
         this.mouse = new MouseHandler();
+        this.onModeChange ? this.onModeChange() : null;
         this.displayRef!.style.cursor = 'crosshair';
         const context = this.displayRef?.getContext('2d');
         if (!context) {

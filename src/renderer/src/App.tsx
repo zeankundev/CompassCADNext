@@ -4,6 +4,7 @@ import { GraphicsRenderer, InitializeInstance } from './engine/Engine'
 import { getRendererIfAvailable, setRendererInstance } from './exports'
 import style from './style/index.module.css'
 import { ModalProvider } from './components/ModalProvider'
+import Toolbar from './components/Toolbar'
 
 function App(): React.JSX.Element {
   const canvas = useRef<HTMLCanvasElement>(null);
@@ -47,6 +48,7 @@ function App(): React.JSX.Element {
     <>
       <ModalProvider />
       <WindowBar/>
+      <Toolbar />
       <div className={style['canvas-container']}>
         <canvas
           width={window.innerWidth}
