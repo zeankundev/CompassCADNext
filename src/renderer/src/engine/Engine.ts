@@ -124,6 +124,14 @@ export class GraphicsRenderer {
             Up: 2
         }
         this.readonly = false;
+        // Will purposefully trigger a crash if not initialized ;) 
+        /* bugfix:
+        [renderer] executing navigate <-- originally what I was doing
+        Engine.ts:2118
+        Uncaught SyntaxError: [renderer] unknown mode, not proceeding (at Engine.ts:2118:23) 
+        at GraphicsRenderer.performAction (Engine.ts:2118:23) 
+        at HTMLCanvasElement.<anonymous> (Engine.ts:2311:18) <-- some nasty motherfucking code tried to reinit the constructor (mode = 0 is only allowed within the constructor)
+         */
         this.mode = 0;
         this.previousColor = null;
         this.previousRadius = null;
