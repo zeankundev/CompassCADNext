@@ -30,6 +30,7 @@ export const _num2hex = (value: number) => {
 }
 
 export class GraphicsRenderer {
+    initialized: boolean;
     modes: GenericDefiner;
     mouseAction: GenericDefiner;
     readonly: boolean;
@@ -99,6 +100,7 @@ export class GraphicsRenderer {
         width: number,
         height: number
     ) {
+        this.initialized = false;
         this.modes = {
             AddPoint: 1,
             AddLine: 2,
@@ -122,7 +124,7 @@ export class GraphicsRenderer {
             Up: 2
         }
         this.readonly = false;
-        this.mode = this.modes.Select;
+        this.mode = 0;
         this.previousColor = null;
         this.previousRadius = null;
         this.displayFont = 'Geist Mono';
@@ -192,16 +194,17 @@ export class GraphicsRenderer {
         console.log('[renderer] starting renderer instance')
         this.logicDisplay = new LogicDisplay();
         this.zoom = 1;
+        this.mode = this.modes.Select;
         this.temporaryObjectArray = [];
         this.keyboard = new KeyboardHandler();
         this.mouse = new MouseHandler();
-        this.onModeChange ? this.onModeChange() : null;
         this.displayRef!.style.cursor = 'crosshair';
         const context = this.displayRef?.getContext('2d');
         if (!context) {
             throw new Error('Failed to get 2D context');
         }
         this.context = context;
+        this.initialized = true;
     }
     scaleForHighDPI(dpi: number) {
         if (this.enableHighDPI) {
@@ -1255,13 +1258,20 @@ export class GraphicsRenderer {
         this.tooltip = this.defaultTooltip;
     }
     setMode(mode: number) {
+        console.log('[renderer] targetting to change to mode', mode)
         this.unselectComponent();
         this.resetMode();
+        
+        if (this.initialized) {
+            // Mode 0 is not valid after initialization
+            this.mode = mode || this.modes.Navigate; // Default to Navigate mode if mode is 0 or undefined
+        }
 
-        if (this.readonly)
-            this.mode = this.modes.Navigate;
-        else
-            this.mode = mode;
+        console.log('[renderer] changed mode to', this.mode)
+
+        if (this.onModeChange) {
+            this.onModeChange();
+        }
     }
     setModeShape(getShape: () => Shape) {
         this.setMode(this.modes.AddShape);
@@ -1709,7 +1719,7 @@ export class GraphicsRenderer {
                             this.fontSize
                         ));
                         this.saveState();
-                        this.mode = this.modes.Navigate;
+                        this.setMode(this.modes.Navigate)
                     }
                 }
                 this.tooltip = "Add label (press esc to cancel)";
@@ -1751,7 +1761,7 @@ export class GraphicsRenderer {
                             url
                         ));
                         this.saveState();
-                        this.mode = this.modes.Navigate;
+                        this.setMode(this.modes.Navigate);
                     }
                 }
                 this.tooltip = "Add Picture (press esc to cancel)";
@@ -1821,6 +1831,7 @@ export class GraphicsRenderer {
                 }
                 break;
             case this.modes.Navigate:
+                console.log('[renderer] executing navigate')
                 this.displayRef!.style.cursor = 'default';
                 if (action === this.mouseAction.Down) {
                     this.camMoving = true;
@@ -1882,6 +1893,7 @@ export class GraphicsRenderer {
                 break;
             case this.modes.Select:
                 this.displayRef!.style.cursor = 'default';
+                console.log('[renderer] executing select')
                 if (action == this.mouseAction.Move) {
                     console.log('[renderer] moused moved during select')
                     if (this.selectedComponent == null) {
@@ -2109,6 +2121,9 @@ export class GraphicsRenderer {
 
                 this.tooltip = "Select (click to select/deselect)";
                 break;
+            default: 
+                throw new SyntaxError('[renderer] unknown mode, not proceeding');
+                break;
         }
     }
     setZoom(zoomFactor: number) {
@@ -2157,7 +2172,6 @@ export class GraphicsRenderer {
         this.zoom = this.targetZoom;
         this.updateCamera();
         this.clearGrid();
-        console.log('[renderer] cam offset, x:' + this.cOutX + ', y:' + this.cOutY)
         if (this.showGrid)
             this.drawGrid(this.cOutX, this.cOutY);
 

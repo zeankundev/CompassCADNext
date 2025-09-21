@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import WindowBar from './components/WindowBar'
 import { GraphicsRenderer, InitializeInstance } from './engine/Engine'
 import { getRendererIfAvailable, setRendererInstance } from './exports'
@@ -9,6 +9,7 @@ import Toolbar from './components/Toolbar'
 function App(): React.JSX.Element {
   const canvas = useRef<HTMLCanvasElement>(null);
   const renderer = useRef<GraphicsRenderer>(null);
+  const [isRendererReady, setIsRendererReady] = useState(false);
   const startRendererInstance = () => {
     if (canvas.current) {
       console.log('[main] canvas is available and ready')
@@ -18,6 +19,7 @@ function App(): React.JSX.Element {
       if (renderer.current) {
         console.log('[main] starting instance now')
         InitializeInstance(renderer.current);
+        setIsRendererReady(true);
       } else {
         console.log('[main] render unavailable, not starting')
       }
@@ -48,7 +50,7 @@ function App(): React.JSX.Element {
     <>
       <ModalProvider />
       <WindowBar/>
-      <Toolbar />
+      {isRendererReady && <Toolbar />}
       <div className={style['canvas-container']}>
         <canvas
           width={window.innerWidth}
