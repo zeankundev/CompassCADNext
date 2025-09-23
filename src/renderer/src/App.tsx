@@ -8,23 +8,25 @@ import Toolbar from './components/Toolbar'
 
 function App(): React.JSX.Element {
   const canvas = useRef<HTMLCanvasElement>(null);
-  const renderer = useRef<GraphicsRenderer>(null);
+  const renderer = useRef<GraphicsRenderer | null>(null);
   const [isRendererReady, setIsRendererReady] = useState(false);
+  const isInitialized = useRef(false); // Track initialization state
+
   const startRendererInstance = () => {
-    if (canvas.current) {
+    // Only initialize once
+    if (canvas.current && !renderer.current && !isInitialized.current) {
       console.log('[main] canvas is available and ready')
-      setRendererInstance(new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight))
-      renderer.current = getRendererIfAvailable();
+      const newRenderer = new GraphicsRenderer(canvas.current, window.innerWidth, window.innerHeight);
+      setRendererInstance(newRenderer);
+      renderer.current = newRenderer;
+      isInitialized.current = true; // Mark as initialized
       console.log('[main] renderer instance now:', renderer.current)
-      if (renderer.current) {
-        console.log('[main] starting instance now')
-        InitializeInstance(renderer.current);
-        setIsRendererReady(true);
-      } else {
-        console.log('[main] render unavailable, not starting')
-      }
+      console.log('[main] starting instance now')
+      InitializeInstance(renderer.current);
+      setIsRendererReady(true);
     }
   }
+
   const resize = () => {
     if (canvas.current && renderer.current) {
       const dpi = window.devicePixelRatio;
@@ -39,13 +41,22 @@ function App(): React.JSX.Element {
       renderer.current.scaleForHighDPI(dpi);
     }
   }
+
   useEffect(() => {
     startRendererInstance();
     resize();
-  }, [])
-  window.onresize = () => {
-    resize();
-  }
+    return () => {
+      renderer.current = null;
+      isInitialized.current = false;
+    };
+  }, []) // Empty dependency array ensures this runs only once
+
+  useEffect(() => {
+    const handleResize = () => resize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <>
       <ModalProvider />

@@ -2,6 +2,15 @@ import { Circle, Component, componentTypes, Line, Measure, Point, Rectangle, Sha
 import { KeyboardHandler, MouseHandler } from "./Input";
 import { LogicDisplay } from "./Logic";
 
+// New cursors
+import Crosshair from '../assets/cursors/crosshair.svg'
+import Move from '../assets/cursors/move.svg'
+import NavigateDrag from '../assets/cursors/navigate-drag.svg'
+import NavigateIdle from '../assets/cursors/navigate-idle.svg'
+import Cursor from '../assets/cursors/normal.svg'
+import NWSE1 from '../assets/cursors/nwse-1.svg'
+import NWSE2 from '../assets/cursors/nwse-2.svg'
+
 let lastTime = performance.now();
 let frameCount = 0;
 let fps = 0;
