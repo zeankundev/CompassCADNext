@@ -6,6 +6,7 @@ import { getRendererIfAvailable } from '@renderer/exports';
 import SelectIcon from '../assets/icons/navigate.svg'
 import NavigateIcon from '../assets/icons/pan.svg'
 import AddLineIcon from '../assets/icons/line.svg'
+import AddTextIcon from '../assets/icons/text.svg'
 
 interface ToolbarButtonProps {
     icon: string;
@@ -78,6 +79,14 @@ export default function Toolbar() {
                     keyCode={Types.default.KeyCodes.W}
                     isActive={modeState == Types.default.NavigationTypes.AddLine}
                     onAction={() => renderer.current?.setMode(Types.default.NavigationTypes.AddLine)}
+                />
+                <ToolbarButton 
+                    icon={AddTextIcon}
+                    title='Navigate'
+                    keyName='w'
+                    keyCode={Types.default.KeyCodes.W}
+                    isActive={modeState == Types.default.NavigationTypes.AddLabel}
+                    onAction={() => renderer.current?.setMode(Types.default.NavigationTypes.AddLabel)}
                 />
             </div>
         </>

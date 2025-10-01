@@ -172,6 +172,7 @@
     border: 0.5px solid var(--outline);
     display: flex;
     flex-direction: column;
+    z-index: 3;
     gap: 5px;
     border-radius: 10px;
 }

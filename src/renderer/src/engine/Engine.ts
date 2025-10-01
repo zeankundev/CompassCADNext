@@ -9,6 +9,7 @@ import NavigateDragCursor from '../assets/cursors/navigate-drag.svg'
 import NavigateIdleCursor from '../assets/cursors/navigate-idle.svg'
 import Nwse1 from '../assets/cursors/nwse-1.svg'
 import Nwse2 from '../assets/cursors/nwse-2.svg'
+import { callTextPrompt } from "@renderer/components/TextPrompt";
 
 let lastTime = performance.now();
 let frameCount = 0;
@@ -1530,7 +1531,7 @@ export class GraphicsRenderer {
             this.onComponentChangeCallback();
         }
     }
-    performAction(e: MouseEvent, action: number) {
+    async performAction(e: MouseEvent, action: number) {
         switch (this.mode) {
             case this.modes.AddPoint:
                 this.displayRef!.style.cursor = `url("${CrosshairCursor}") 16 16, crosshair`;
@@ -1748,7 +1749,7 @@ export class GraphicsRenderer {
                         this.temporaryPoints[1] = this.getCursorYLocal();
                     }
                 } else if (action === this.mouseAction.Down) {
-                    const text = prompt('Add text...');
+                    const text = await callTextPrompt('Add text...');
                     if (text && text.length > 0) {
                         this.logicDisplay?.addComponent(new Label(
                             this.temporaryPoints[0]!,
@@ -1757,7 +1758,7 @@ export class GraphicsRenderer {
                             this.fontSize
                         ));
                         this.saveState();
-                        this.mode = this.modes.Navigate;
+                        this.setMode(this.modes.Select);
                     }
                 }
                 this.tooltip = "Add label (press esc to cancel)";
@@ -1791,7 +1792,7 @@ export class GraphicsRenderer {
                         this.temporaryPoints[1] = this.getCursorYLocal();
                     }
                 } else if (action === this.mouseAction.Down) {
-                    const url = prompt('Enter a valid Image URL');
+                    const url = await callTextPrompt('Enter a valid Image URL');
                     if (url && url.length > 0) {
                         this.logicDisplay?.addComponent(new Picture(
                             this.temporaryPoints[0]!,
@@ -1799,7 +1800,7 @@ export class GraphicsRenderer {
                             url
                         ));
                         this.saveState();
-                        this.mode = this.modes.Navigate;
+                        this.setMode(this.modes.Select);
                     }
                 }
                 this.tooltip = "Add Picture (press esc to cancel)";
