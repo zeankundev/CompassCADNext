@@ -13,12 +13,25 @@ interface ToolbarButtonProps {
     title: string;
     keyName: string;
     keyCode: number;
+    alternateKeyCode?: number;
     // To check if the tool is selected
     isActive: boolean;
     onAction?: () => void;
 }
 
 function ToolbarButton(props: ToolbarButtonProps) {
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if ((e.keyCode === props.keyCode || e.keyCode === props.alternateKeyCode) && props.onAction) {
+                e.preventDefault();
+                props.onAction();
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+    })
     return (
         <div 
             className={`${styles['toolbar-button']}${props.isActive ? ` ${styles['button-active']}` : ''}`}
@@ -74,17 +87,17 @@ export default function Toolbar() {
                 />
                 <ToolbarButton 
                     icon={AddLineIcon}
-                    title='Navigate'
-                    keyName='w'
-                    keyCode={Types.default.KeyCodes.W}
+                    title='Add Line'
+                    keyName='s'
+                    keyCode={Types.default.KeyCodes.S}
                     isActive={modeState == Types.default.NavigationTypes.AddLine}
                     onAction={() => renderer.current?.setMode(Types.default.NavigationTypes.AddLine)}
                 />
                 <ToolbarButton 
                     icon={AddTextIcon}
-                    title='Navigate'
-                    keyName='w'
-                    keyCode={Types.default.KeyCodes.W}
+                    title='Add Label'
+                    keyName='h'
+                    keyCode={Types.default.KeyCodes.H}
                     isActive={modeState == Types.default.NavigationTypes.AddLabel}
                     onAction={() => renderer.current?.setMode(Types.default.NavigationTypes.AddLabel)}
                 />
