@@ -34,19 +34,47 @@ export default function WindowBar() {
     const [isMaximized, setMaximized] = useState<boolean>(false);
     const [zoom, setZoom] = useState<number>(1);
     const [menuOpened, setMenuOpened] = useState<boolean>(false);
-    const renderer = useRef<GraphicsRenderer>(null);
+    const renderer = useRef<GraphicsRenderer | null>(null);
+
     window.electron.ipcRenderer.on('isMaximized', (_event, isMaximized: boolean) => {
         console.log(`[windowbar] isMaximized: ${isMaximized}`);
         setMaximized(isMaximized);
     })
+
     useEffect(() => {
-        renderer.current = getRendererIfAvailable();
-        if (renderer.current) {
-            renderer.current.onZoomUpdate = () => {
-                setZoom(renderer.current!.zoom);
+        const checkForRenderer = () => {
+            const rendererInstance = getRendererIfAvailable();
+            if (rendererInstance) {
+                console.log('[windowbar] Renderer instance found!', rendererInstance);
+                renderer.current = rendererInstance;
+
+                // Set initial zoom value
+                setZoom(renderer.current.zoom);
+
+                // Setup the callback for future zoom updates
+                renderer.current.onZoomUpdate = () => {
+                    if (renderer.current) {
+                        setZoom(renderer.current.zoom);
+                    }
+                };
+                
+                // Once found, we don't need to check anymore
+                clearInterval(rendererInterval);
             }
-        }
-    }, []);
+        };
+
+        // Poll for the renderer instance every 100ms
+        const rendererInterval = setInterval(checkForRenderer, 100);
+
+        // Cleanup function to clear interval and callback on component unmount
+        return () => {
+            clearInterval(rendererInterval);
+            if (renderer.current) {
+                renderer.current.onZoomUpdate = null;
+            }
+        };
+    }, []); // Empty dependency array ensures this runs only once on mount
+
     window.addEventListener('click', (event) => {
         const target = event.target as HTMLElement;
         if (!target.closest('#menu-opener') && menuOpened) {

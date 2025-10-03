@@ -107,6 +107,7 @@ export const TextPrompt: React.FC = () => {
         <input
           ref={inputRef}
           type="text"
+          placeholder='Enter text...'
           value={inputValue}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
           onKeyDown={handleInputKeyDown}

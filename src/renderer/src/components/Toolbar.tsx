@@ -23,8 +23,12 @@ function ToolbarButton(props: ToolbarButtonProps) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if ((e.keyCode === props.keyCode || e.keyCode === props.alternateKeyCode) && props.onAction) {
-                e.preventDefault();
-                props.onAction();
+                if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA' || (document.activeElement as HTMLElement).isContentEditable)) {
+                    return;
+                } else {
+                    e.preventDefault();
+                    props.onAction();
+                }
             }
         }
         window.addEventListener('keydown', handleKeyDown);

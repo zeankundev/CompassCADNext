@@ -1525,6 +1525,7 @@ export class GraphicsRenderer {
     public onComponentChangeCallback: (() => void) | null = null;
     public onModeChange: (() => void) | null = null;
     public onComponentArrayChanged: (() => void) | null = null;
+    public onZoomUpdate: (() => void) | null = null;
 
     private notifyComponentChange() {
         if (this.onComponentChangeCallback) {
@@ -2183,6 +2184,7 @@ export class GraphicsRenderer {
         const zoomDiff = this.targetZoom - this.zoom;
         this.camX -= cursorOffsetX * (zoomDiff / this.zoom);
 		this.camY -= cursorOffsetY * (zoomDiff / this.zoom);
+        console.log('[renderer] onZoomUpdate callback?', this.onZoomUpdate)
     }
     clearGrid() {
         if (this.context) {
@@ -2223,6 +2225,10 @@ export class GraphicsRenderer {
         this.refreshSelectionTools();
         if (this.recordingMode) {
             this.drawUserCursor((this.getCursorXRaw() + this.camX) * this.zoom, (this.getCursorYRaw() + this.camY) * this.zoom);
+        }
+        // Useful event handlers for later on ;)
+        if (this.onZoomUpdate) {
+            this.onZoomUpdate();
         }
     }
 }
